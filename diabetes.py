@@ -1,4 +1,7 @@
+
+
 import pandas as pd
+import joblib
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
@@ -10,7 +13,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.svm import SVC
 
-data = pd.read_csv("diabetes_dataset.csv")
+data = pd.read_csv("diabetes_dataset_extended.csv")
 data = data.drop("Patient_ID", axis = 1)
 # profile = ProfileReport(data, title = "diabetes_report", explorative=True )
 # profile.to_file("diabetes_statistical")
@@ -82,18 +85,6 @@ cls.fit(x_train, y_train)
 y_predict = cls.predict(x_test)
 print(classification_report(y_test, y_predict))
 
-# param_grid = {
-#     'model__n_estimators': [100, 200, 300],  # Số lượng cây trong rừng
-#     'model__max_depth': [10, 20, 30, None],  # Độ sâu tối đa của cây
-#     'model__min_samples_split': [2, 5, 10],  # Số mẫu tối thiểu để chia nhánh
-#     'model__min_samples_leaf': [1, 2, 4],    # Số mẫu tối thiểu trong một lá
-#     'model__max_features': ['sqrt', 'log2'], # Số lượng đặc trưng tối đa dùng để chia
-#     'model__bootstrap': [True, False],       # Có dùng Bootstrap hay không
-# }
-#
-# gridsearch = GridSearchCV(estimator=cls, param_grid=param_grid, cv = 5,scoring="recall", verbose=2)
-# gridsearch.fit(x_train, y_train)
-# print(gridsearch.best_params_)
-# print(gridsearch.best_score_)
-# y_predict =gridsearch.predict(x_test)
-# print(classification_report(y_test, y_predict))
+
+joblib.dump(cls, "diabetes_pipeline.pkl")
+print("Pipeline đã được lưu thành diabetes_pipeline.pkl")
