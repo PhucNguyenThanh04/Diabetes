@@ -85,6 +85,8 @@ cls.fit(x_train, y_train)
 y_predict = cls.predict(x_test)
 print(classification_report(y_test, y_predict))
 
+joblib.dump(cls, "diabetes_model.pkl")
 
-joblib.dump(cls, "diabetes_pipeline.pkl")
-print("Pipeline đã được lưu thành diabetes_pipeline.pkl")
+#
+# joblib.dump(cls, "diabetes_pipeline.pkl")
+# print("Pipeline đã được lưu thành diabetes_pipeline.pkl")
