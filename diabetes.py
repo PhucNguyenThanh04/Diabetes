@@ -12,6 +12,7 @@ import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.svm import SVC
+import pickle
 
 data = pd.read_csv("diabetes_dataset_extended.csv")
 data = data.drop("Patient_ID", axis = 1)
@@ -91,4 +92,5 @@ joblib.dump(cls, "diabetes_model.pkl")
 # joblib.dump(cls, "diabetes_pipeline.pkl")
 # print("Pipeline đã được lưu thành diabetes_pipeline.pkl")
 
-#test
+with open("model.pkl", "wb") as f:
+    pickle.dump(cls, f)
