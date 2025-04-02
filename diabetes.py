@@ -90,3 +90,5 @@ joblib.dump(cls, "diabetes_model.pkl")
 #
 # joblib.dump(cls, "diabetes_pipeline.pkl")
 # print("Pipeline đã được lưu thành diabetes_pipeline.pkl")
+
+#test
