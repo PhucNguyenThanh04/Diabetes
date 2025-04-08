@@ -1,5 +1,4 @@
 
-
 import pandas as pd
 import joblib
 from sklearn.compose import ColumnTransformer
@@ -15,15 +14,19 @@ from sklearn.svm import SVC
 import pickle
 
 data = pd.read_csv("diabetes_dataset_extended.csv")
+statistic = data.describe()
 data = data.drop("Patient_ID", axis = 1)
 data = data.drop("BMI_Category", axis = 1)
 # profile = ProfileReport(data, title = "diabetes_report", explorative=True )
 # profile.to_file("diabetes_statistical")
 
-# split_data
+# chia dư lieu theo chieu ngan
 target = "Outcome"
 x = data.drop(target, axis = 1)
 y = data[target]
+
+# chia du lieu theo chiu doc
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
 bool_cols =["Smoker"]
 num_cols = ["Pregnancies",
@@ -35,12 +38,17 @@ num_cols = ["Pregnancies",
             "DiabetesPedigreeFunction",
             "Age"]
 nom_cols = ["Notes"]
-ord_cols =["BMI_Category"]
 
 x[bool_cols] = x[bool_cols].replace(["N/A", "p", "nan"], np.nan)
 x[bool_cols] = x[bool_cols].astype(bool).astype(int)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+Q1 = data[num_cols].quantile(0.25)
+Q3 = data[num_cols].quantile(0.75)
+IQR = Q3 - Q1
+data = data[~((data[num_cols] < (Q1 - 1.5 * IQR)) |
+                        (data[num_cols] > (Q3 + 1.5 * IQR))).any(axis=1)]
+
+
 
 bmi_category_value =["Underweight","Normal", "Overweight", "Obese"]
 
@@ -68,11 +76,9 @@ num_transformer = Pipeline(steps=[
 #preprocessor data
 preprocessor =ColumnTransformer(transformers=[
     ("bool_feature", bool_transformer, bool_cols),
-    #("ord_feature", ord_transformer, ord_cols),
     ("nom_feature", nom_transformer, nom_cols),
     ("num_feature", num_transformer, num_cols),
 ])
-
 
 cls = Pipeline(steps=[
     ("preprocessor", preprocessor),
@@ -135,6 +141,7 @@ cls.fit(x_train, y_train)
 # predictions = cls.predict(inputs)[0]
 # print(predictions)
 #
+
 y_predict = cls.predict(x_test)
 print(classification_report(y_test, y_predict))
 
